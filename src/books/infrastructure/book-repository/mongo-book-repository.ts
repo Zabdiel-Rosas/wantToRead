@@ -5,7 +5,7 @@ import { BookRepository } from '../../domain/book-repository';
 const database: Book[] = [
   { id: '1', name: 'The Importance of Being Ernest' },
   { id: '2', name: 'The Subtle Art of Not Giving a Fuck' },
-  { id: '3', name: 'Harry Potter and the Goblet of Fire' }
+  { id: '3', name: "Harry Potter and the Philosopher's Stone" }
 ];
 
 export class MongoBookRepository implements BookRepository {
@@ -18,5 +18,12 @@ export class MongoBookRepository implements BookRepository {
     const rawBook = await database.find((book) => book.id === id);
 
     return rawBook ? new Book(rawBook.id, rawBook.name) : null;
+  }
+
+  async createBook(id: string, name: string): Promise<Book | null> {
+    const newBook: Book = { id, name };
+    await database.push(newBook);
+
+    return newBook;
   }
 }
