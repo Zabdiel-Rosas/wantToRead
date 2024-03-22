@@ -38,9 +38,9 @@ export class BookController {
 
   async createNewBook(req: Request, res: Response) {
     try {
-      const { id, name } = req.params;
+      const { id, name } = req.body;
       const newBook = await this.createBook.run(id, name);
-      return res.status(200).send(newBook);
+      return res.status(201).send(newBook);
     } catch (err) {
       if (err instanceof Error) {
         return res.status(500).send(err.message);
