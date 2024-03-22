@@ -17,7 +17,15 @@ export class MongoBookRepository implements BookRepository {
     return rawBook ? new Book(rawBook.id, rawBook.name) : null;
   }
 
-  async createBook(id: string, name: string): Promise<Book | null> {
+  async createBook(name: string): Promise<Book | null> {
+    function generateId() {
+      const idsArr = database.map((book) => Number(book.id));
+      const newId = Math.max(...idsArr) + 1;
+
+      return newId.toString();
+    }
+
+    const id = generateId();
     const newBook: Book = { id, name };
     await database.push(newBook);
 

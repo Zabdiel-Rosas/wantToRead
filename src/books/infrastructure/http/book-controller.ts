@@ -40,8 +40,7 @@ export class BookController {
 
   async createNewBook(req: Request, res: Response) {
     try {
-      const { id, name } = req.body;
-      const newBook = await this.createBook.run(id, name);
+      const newBook = await this.createBook.run(req.body.name);
       return res.status(201).send(newBook);
     } catch (err) {
       if (err instanceof Error) {
