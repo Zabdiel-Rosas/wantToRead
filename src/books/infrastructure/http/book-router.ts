@@ -7,5 +7,6 @@ bookRouter.get('/', bookGetController.readAll.bind(bookGetController));
 bookRouter.get('/:id', bookGetController.readById.bind(bookGetController));
 bookRouter.post('/', bookGetController.createNewBook.bind(bookGetController));
 bookRouter.put('/:id', bookGetController.updateById.bind(bookGetController));
+bookRouter.delete('/:id', bookGetController.deleteById.bind(bookGetController));
 
 export { bookRouter };
