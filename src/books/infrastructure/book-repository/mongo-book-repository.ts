@@ -3,7 +3,7 @@ import { BookRepository } from '../../domain/book-repository';
 import db from './db.json';
 
 // Mock database or database access methods can be implemented here
-const database: Book[] = db.books;
+let database: Book[] = db.books;
 
 export class MongoBookRepository implements BookRepository {
   async getAllBooks() {
@@ -17,7 +17,15 @@ export class MongoBookRepository implements BookRepository {
     return rawBook ? new Book(rawBook.id, rawBook.name) : null;
   }
 
-  async createBook(id: string, name: string): Promise<Book | null> {
+  async createBook(name: string): Promise<Book | null> {
+    function generateId() {
+      const idsArr = database.map((book) => Number(book.id));
+      const newId = Math.max(...idsArr) + 1;
+
+      return newId.toString();
+    }
+
+    const id = generateId();
     const newBook: Book = { id, name };
     await database.push(newBook);
 
@@ -34,5 +42,18 @@ export class MongoBookRepository implements BookRepository {
     const updatedBook = { ...database[bookIndex], name };
     database[bookIndex] = updatedBook;
     return updatedBook;
+  }
+
+  async deleteBook(id: string): Promise<Book | null> {
+    const bookIndex = await database.findIndex((book) => book.id === id);
+
+    if (bookIndex === -1) {
+      return null;
+    }
+
+    const deletedBook = database[bookIndex];
+    database = database.filter((book) => book.id !== id);
+
+    return deletedBook;
   }
 }

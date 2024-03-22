@@ -4,13 +4,15 @@ import { GetBookById } from '../../application/get-book-by-id';
 import { BookNotFound } from '../../domain/book-not-found';
 import { CreateBook } from '../../application/create-book';
 import { UpdateBook } from '../../application/update-book';
+import { DeleteBook } from '../../application/delete-book';
 
 export class BookController {
   constructor(
     private readonly getAllBooks: GetAllBooks,
     private readonly getBookById: GetBookById,
     private readonly createBook: CreateBook,
-    private readonly updateBook: UpdateBook
+    private readonly updateBook: UpdateBook,
+    private readonly deleteBook: DeleteBook
   ) {}
 
   async readAll(_: Request, res: Response) {
@@ -40,8 +42,7 @@ export class BookController {
 
   async createNewBook(req: Request, res: Response) {
     try {
-      const { id, name } = req.body;
-      const newBook = await this.createBook.run(id, name);
+      const newBook = await this.createBook.run(req.body.name);
       return res.status(201).send(newBook);
     } catch (err) {
       if (err instanceof Error) {
@@ -60,6 +61,19 @@ export class BookController {
     } catch (err) {
       if (err instanceof Error) {
         return res.status(500).send(err.message);
+      }
+    }
+  }
+
+  async deleteById(req: Request, res: Response) {
+    try {
+      const deletedBook = await this.deleteBook.run(req.params.id);
+      console.log('Book Deleted: ', deletedBook);
+
+      return res.status(204).send({});
+    } catch (err) {
+      if (err instanceof Error) {
+        res.status(500).send(err.message);
       }
     }
   }
