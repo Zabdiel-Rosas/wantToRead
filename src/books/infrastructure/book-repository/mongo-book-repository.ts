@@ -23,4 +23,16 @@ export class MongoBookRepository implements BookRepository {
 
     return newBook;
   }
+
+  async updateBook(id: string, name: string): Promise<Book | null> {
+    const bookIndex = await database.findIndex((book) => book.id === id);
+
+    if (bookIndex === -1) {
+      return null;
+    }
+
+    const updatedBook = { ...database[bookIndex], name };
+    database[bookIndex] = updatedBook;
+    return updatedBook;
+  }
 }
